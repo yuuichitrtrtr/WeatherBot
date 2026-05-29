@@ -199,9 +199,10 @@ namespace WeatherBot
             {
             Console.WriteLine($"🔔 [ТАЙМЕР] Сработал в {DateTime.Now:HH:mm:ss}");
             var now = DateTime.Now;
-                string currentTime = now.ToString("HH:mm");
+            var moscowTime = now.AddHours(3);
+            string currentTimeMoscow = moscowTime.ToString("HH:mm");
 
-            Console.WriteLine($"🔔 [ТАЙМЕР] Текущее время: {currentTime}");
+            Console.WriteLine($"🔔 [ТАЙМЕР] Текущее время: {currentTimeMoscow}");
             if (_botClient == null)
                 {
                     Console.WriteLine("❌ КРИТИЧЕСКАЯ ОШИБКА: _botClient = null после создания!");
@@ -210,7 +211,7 @@ namespace WeatherBot
                 foreach (var sub in _subscriptionManager.GetAllSubscriptions())
                 {
                 Console.WriteLine($"🔔 [ТАЙМЕР] Подписка: {sub.City} в {sub.Time}, пользователь {sub.UserId}");
-                if (sub.Time == currentTime)
+                if (sub.Time == currentTimeMoscow)
                     {
                         try
                         {
