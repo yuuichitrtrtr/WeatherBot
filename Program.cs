@@ -11,6 +11,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Text.Json.Serialization;
 using System.Linq;
+using System.Net;
 
 namespace WeatherBot
 {
@@ -84,7 +85,36 @@ namespace WeatherBot
     }
         class Bot
         {
-            private static ReplyKeyboardMarkup _mainKeyboard;
+        private static void StartSimpleWebServer()
+        {
+            Task.Run(() =>
+            {
+                try
+                {
+                    var listener = new HttpListener();
+                    listener.Prefixes.Add("http://*:10000/");
+                    listener.Start();
+                    Console.WriteLine("✅ Веб-сервер запущен на порту 10000");
+
+                    while (true)
+                    {
+                        var context = listener.GetContext();
+                        string responseString = "Weather Bot is running!";
+                        byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+
+                        context.Response.ContentType = "text/plain";
+                        context.Response.ContentLength64 = buffer.Length;
+                        context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+                        context.Response.OutputStream.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ Ошибка веб-сервера: {ex.Message}");
+                }
+            });
+        }
+        private static ReplyKeyboardMarkup _mainKeyboard;
             private static WeatherService _weatherService;
             private static SubscriptionManager _subscriptionManager;
             private static ITelegramBotClient _botClient;
@@ -135,7 +165,10 @@ namespace WeatherBot
                 _botClient.StartReceiving(handlerUpdate, errorHandler);
 
                 Console.WriteLine("Бот запущен...");
-                await Task.Delay(-1);
+
+            StartSimpleWebServer();
+
+            await Task.Delay(-1);
 
 
         }
