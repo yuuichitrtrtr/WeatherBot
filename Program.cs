@@ -215,7 +215,7 @@ namespace WeatherBot
                     {
                         try
                         {
-                            Console.WriteLine($"📤 Отправка уведомления для {sub.City} в {currentTime}");
+                            Console.WriteLine($"📤 Отправка уведомления для {sub.City} в {currentTimeMoscow}");
 
                             string weather = await _weatherService.GetWeatherAsync(sub.City);
                             await _botClient.SendMessage(sub.ChatId,
