@@ -1,17 +1,18 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
+using Telegram.Bot.Requests.Abstractions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Text.Json.Serialization;
-using System.Linq;
-using System.Net;
 
 namespace WeatherBot
 {
@@ -99,13 +100,28 @@ namespace WeatherBot
                     while (true)
                     {
                         var context = listener.GetContext();
-                        string responseString = "Weather Bot is running!";
-                        byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+                        var request = context.Request;
+                        var response = context.Response;
 
-                        context.Response.ContentType = "text/plain";
-                        context.Response.ContentLength64 = buffer.Length;
-                        context.Response.OutputStream.Write(buffer, 0, buffer.Length);
-                        context.Response.OutputStream.Close();
+                        // Обработка разных путей
+                        if (request.Url?.AbsolutePath == "/health")
+                        {
+                            string responseString = "OK";
+                            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+                            response.ContentType = "text/plain";
+                            response.ContentLength64 = buffer.Length;
+                            response.OutputStream.Write(buffer, 0, buffer.Length);
+                        }
+                        else
+                        {
+                            string responseString = "Weather Bot is running!";
+                            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+                            response.ContentType = "text/plain";
+                            response.ContentLength64 = buffer.Length;
+                            response.OutputStream.Write(buffer, 0, buffer.Length);
+                        }
+
+                        response.OutputStream.Close();
                     }
                 }
                 catch (Exception ex)
