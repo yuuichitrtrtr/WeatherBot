@@ -436,7 +436,7 @@ namespace WeatherBot
                 }
                 else
                 {
-                    await botClient.SendMessage(message.Chat.Id, "Не неси хуйни");
+                    await botClient.SendMessage(message.Chat.Id, "Ошибка запроса!");
                 }
             }
             static Task errorHandler(ITelegramBotClient botClient, Exception error, CancellationToken token)
