@@ -197,16 +197,20 @@ namespace WeatherBot
             }
             private static async void CheckAndSendNotifications(object state)
             {
-                var now = DateTime.Now;
+            Console.WriteLine($"🔔 [ТАЙМЕР] Сработал в {DateTime.Now:HH:mm:ss}");
+            var now = DateTime.Now;
                 string currentTime = now.ToString("HH:mm");
-                if (_botClient == null)
+
+            Console.WriteLine($"🔔 [ТАЙМЕР] Текущее время: {currentTime}");
+            if (_botClient == null)
                 {
                     Console.WriteLine("❌ КРИТИЧЕСКАЯ ОШИБКА: _botClient = null после создания!");
                     return;
                 }
                 foreach (var sub in _subscriptionManager.GetAllSubscriptions())
                 {
-                    if (sub.Time == currentTime)
+                Console.WriteLine($"🔔 [ТАЙМЕР] Подписка: {sub.City} в {sub.Time}, пользователь {sub.UserId}");
+                if (sub.Time == currentTime)
                     {
                         try
                         {
@@ -218,13 +222,16 @@ namespace WeatherBot
 
                             Console.WriteLine($"✅ Уведомление отправлено пользователю {sub.UserId}");
                         }
+
                         catch (Exception ex)
                         {
                             Console.WriteLine($"❌ Ошибка отправки: {ex.Message}");
-                        }
+                        Console.WriteLine($"🔔 [ТАЙМЕР] Проверка завершена в {DateTime.Now:HH:mm:ss}");
+                    }
                     }
                 }
             }
+            
             static async Task handlerUpdate(ITelegramBotClient botClient, Update update, CancellationToken token)
             {
                 var message = update.Message;
