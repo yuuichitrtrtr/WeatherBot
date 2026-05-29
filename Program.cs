@@ -103,7 +103,8 @@ namespace WeatherBot
                         var request = context.Request;
                         var response = context.Response;
 
-                        // Обработка разных путей
+                        Console.WriteLine($"📡 Запрос получен: ...");
+                        Console.WriteLine($"💓 Health check OK ...");
                         if (request.Url?.AbsolutePath == "/health")
                         {
                             string responseString = "OK";
@@ -111,6 +112,8 @@ namespace WeatherBot
                             response.ContentType = "text/plain";
                             response.ContentLength64 = buffer.Length;
                             response.OutputStream.Write(buffer, 0, buffer.Length);
+
+                            Console.WriteLine($"💓 Health check OK ...");
                         }
                         else
                         {
